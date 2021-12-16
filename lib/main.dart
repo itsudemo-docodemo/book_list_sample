@@ -1,7 +1,13 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'book_list_page.dart';
 
-void main() {
+void main() async {
+  //cloud_firestore初期化
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+//  await Firebase.initializeApp(options: DefaultFirebaseConfig.platformOptions);
+
   runApp(const MyApp());
 }
 

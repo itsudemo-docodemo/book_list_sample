@@ -1,4 +1,4 @@
-package com.example.book_list_sample
+package com.itsudemo.docodemo.book_list_sample
 
 import io.flutter.embedding.android.FlutterActivity
 
