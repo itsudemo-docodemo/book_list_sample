@@ -11,7 +11,6 @@ class AddBookPage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(title: Text('本を追加')),
         body: Center(
-          //fetchBookList完了によって発火する。
           child: Consumer<AddBookModel>(builder: (context, model, child) {
             return Padding(
               padding: const EdgeInsets.all(16.0),

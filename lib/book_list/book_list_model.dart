@@ -14,11 +14,12 @@ class BookListModel extends ChangeNotifier {
     final List<Book> books = snapshot.docs.map((DocumentSnapshot document) {
       //まずはString,dynamicのdataに変換する
       Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-      //dataからtitleとauthorを取り出す
+      //dataからidとtitleとauthorを取り出す
+      final String id = document.id;
       final String title = data['title'];
       final String author = data['author'];
       //Bookをinitializeしてリターンする
-      return Book(title, author);
+      return Book(id, title, author);
     }).toList();
     //this.booksに格納して、完了を通知(notifyListeners)。
     //すると、book_list_pageのConsumerが発火する。
