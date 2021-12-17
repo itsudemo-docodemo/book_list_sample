@@ -25,27 +25,58 @@ class BookListPage extends StatelessWidget {
             //booksをList<Widget>型に変換する。
             final List<Widget> widgets = books
                 .map(
-                  (book) => ListTile(
-                    title: Text(book.title),
-                    subtitle: Text(book.author),
-                    onTap: () async {
-                      final String? title = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => EditBookPage(book),
-                        ),
-                      );
-                      //編集成功したらsnackbarを表示
-                      if (title != null) {
-                        final snackBar = SnackBar(
-                          backgroundColor: Colors.green,
-                          content: Text('$titleを編集しました'),
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                        //画面を更新
-                        model.fetchBookList();
-                      }
+                  (book) => Dismissible(
+                    key: UniqueKey(),
+                    background: Container(
+                      color: Colors.red,
+                      padding: EdgeInsets.only(
+                        right: 20,
+                      ),
+                      alignment: AlignmentDirectional.centerEnd,
+                      child: Icon(
+                        Icons.delete,
+                        color: Colors.white,
+                      ),
+                    ),
+                    confirmDismiss: (direction) async {
+                      // ここで確認を行う
+                      // Future<bool> で確認結果を返す
+                      // False の場合削除されない
+                      return await showConfirmDialog(context, book);
                     },
+                    onDismissed: (direction) async {
+                      // 削除アニメーションが完了し、リサイズが終了したときに呼ばれる
+                      await model.delete(book);
+                      final snackBar = SnackBar(
+                        backgroundColor: Colors.red,
+                        content: Text('${book.title}を削除しました'),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      //画面を更新
+                      model.fetchBookList();
+                    },
+                    child: ListTile(
+                      title: Text(book.title),
+                      subtitle: Text(book.author),
+                      onTap: () async {
+                        final String? title = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EditBookPage(book),
+                          ),
+                        );
+                        //編集成功したらsnackbarを表示
+                        if (title != null) {
+                          final snackBar = SnackBar(
+                            backgroundColor: Colors.green,
+                            content: Text('$titleを編集しました'),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          //画面を更新
+                          model.fetchBookList();
+                        }
+                      },
+                    ),
                   ),
                 )
                 .toList();
@@ -82,6 +113,33 @@ class BookListPage extends StatelessWidget {
           );
         }), // This trailing comma makes auto-formatting nicer for build methods.
       ),
+    );
+  }
+
+  Future showConfirmDialog(BuildContext context, Book book) {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) {
+        return AlertDialog(
+          title: Text('削除の確認'),
+          content: Text('${book.title}を削除しますか？'),
+          actions: [
+            TextButton(
+              child: Text("いいえ"),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            TextButton(
+              child: Text("はい"),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
