@@ -1,6 +1,7 @@
 import 'package:book_list_sample/add_book/add_book_page.dart';
 import 'package:book_list_sample/book_list/book_list_model.dart';
 import 'package:book_list_sample/domain/book.dart';
+import 'package:book_list_sample/edit_book/edit_book_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -14,7 +15,7 @@ class BookListPage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(title: Text('本一覧')),
         body: Center(
-          //fetchBookList完了によって発火する。
+          //notifyListenersによって発火する。
           child: Consumer<BookListModel>(builder: (context, model, child) {
             final List<Book>? books = model.books;
             //fetchBookList完了まではbooksがNULLなので待ち表示する。
@@ -27,6 +28,24 @@ class BookListPage extends StatelessWidget {
                   (book) => ListTile(
                     title: Text(book.title),
                     subtitle: Text(book.author),
+                    onTap: () async {
+                      final String? title = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EditBookPage(book),
+                        ),
+                      );
+                      //編集成功したらsnackbarを表示
+                      if (title != null) {
+                        final snackBar = SnackBar(
+                          backgroundColor: Colors.green,
+                          content: Text('$titleを編集しました'),
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        //画面を更新
+                        model.fetchBookList();
+                      }
+                    },
                   ),
                 )
                 .toList();
