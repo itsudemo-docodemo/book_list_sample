@@ -1,8 +1,8 @@
 import 'package:book_list_sample/domain/book.dart';
+import 'package:book_list_sample/edit_book/edit_book_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'edit_book_model.dart';
 
 class EditBookPage extends StatelessWidget {
   final Book book;
