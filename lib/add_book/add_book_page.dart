@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'add_book_model.dart';
@@ -9,7 +8,7 @@ class AddBookPage extends StatelessWidget {
     return ChangeNotifierProvider<AddBookModel>(
       create: (_) => AddBookModel(),
       child: Scaffold(
-        appBar: AppBar(title: Text('本を追加')),
+        appBar: AppBar(title: const Text('本を追加')),
         body: Center(
           child: Consumer<AddBookModel>(builder: (context, model, child) {
             return Padding(
@@ -17,25 +16,25 @@ class AddBookPage extends StatelessWidget {
               child: Column(
                 children: [
                   TextField(
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: '本のタイトル',
                     ),
                     onChanged: (text) {
                       model.title = text;
                     },
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 16,
                   ),
                   TextField(
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: '本の著者',
                     ),
                     onChanged: (text) {
                       model.author = text;
                     },
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 16,
                   ),
                   ElevatedButton(
@@ -54,7 +53,7 @@ class AddBookPage extends StatelessWidget {
                         ScaffoldMessenger.of(context).showSnackBar(snackBar);
                       }
                     },
-                    child: Text('追加する'),
+                    child: const Text('追加する'),
                   ),
                 ],
               ),

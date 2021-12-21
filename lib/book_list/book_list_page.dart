@@ -3,7 +3,8 @@ import 'package:book_list_sample/book_list/book_list_model.dart';
 import 'package:book_list_sample/domain/book.dart';
 import 'package:book_list_sample/edit_book/edit_book_page.dart';
 import 'package:book_list_sample/login/login_page.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:book_list_sample/mypage/my_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,20 +16,35 @@ class BookListPage extends StatelessWidget {
       create: (_) => BookListModel()..fetchBookList(),
       child: Scaffold(
         appBar: AppBar(
-          title: Text('本一覧'),
+          title: const Text('本一覧'),
           actions: [
             IconButton(
                 onPressed: () async {
                   //画面遷移
-                  await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => LoginPage(),
-                      fullscreenDialog: true, //pageが下から出現
-                    ),
-                  );
+                  if (FirebaseAuth.instance.currentUser != null) {
+                    //ログインしている
+                    // ignore: avoid_print
+                    print('ログインしている');
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MyPage(),
+                      ),
+                    );
+                  } else {
+                    //ログインしていないのでログインページへ遷移
+                    // ignore: avoid_print
+                    print('ログインしていない');
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LoginPage(),
+                        fullscreenDialog: true, //pageが下から出現
+                      ),
+                    );
+                  }
                 },
-                icon: Icon(Icons.person)),
+                icon: const Icon(Icons.person)),
           ],
         ),
         body: Center(
@@ -37,7 +53,7 @@ class BookListPage extends StatelessWidget {
             final List<Book>? books = model.books;
             //fetchBookList完了まではbooksがNULLなので待ち表示する。
             if (books == null) {
-              return CircularProgressIndicator();
+              return const CircularProgressIndicator();
             }
             //booksをList<Widget>型に変換する。
             final List<Widget> widgets = books
@@ -46,11 +62,11 @@ class BookListPage extends StatelessWidget {
                     key: UniqueKey(),
                     background: Container(
                       color: Colors.red,
-                      padding: EdgeInsets.only(
+                      padding: const EdgeInsets.only(
                         right: 20,
                       ),
                       alignment: AlignmentDirectional.centerEnd,
-                      child: Icon(
+                      child: const Icon(
                         Icons.delete,
                         color: Colors.white,
                       ),
@@ -116,7 +132,7 @@ class BookListPage extends StatelessWidget {
               );
               //追加成功したらsnackbarを表示
               if (added != null && added == true) {
-                final snackBar = SnackBar(
+                const snackBar = SnackBar(
                   backgroundColor: Colors.green,
                   content: Text('本を追加しました'),
                 );
@@ -139,17 +155,17 @@ class BookListPage extends StatelessWidget {
       barrierDismissible: false,
       builder: (_) {
         return AlertDialog(
-          title: Text('削除の確認'),
+          title: const Text('削除の確認'),
           content: Text('${book.title}を削除しますか？'),
           actions: [
             TextButton(
-              child: Text("いいえ"),
+              child: const Text("いいえ"),
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
             ),
             TextButton(
-              child: Text("はい"),
+              child: const Text("はい"),
               onPressed: () {
                 Navigator.of(context).pop(true);
               },

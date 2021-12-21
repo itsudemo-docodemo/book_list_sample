@@ -8,7 +8,7 @@ class RegisterPage extends StatelessWidget {
     return ChangeNotifierProvider<RegisterModel>(
       create: (_) => RegisterModel(),
       child: Scaffold(
-        appBar: AppBar(title: Text('新規登録')),
+        appBar: AppBar(title: const Text('新規登録')),
         body: Center(
           //notifyListenersによって発火する。
           child: Consumer<RegisterModel>(builder: (context, model, child) {
@@ -20,26 +20,27 @@ class RegisterPage extends StatelessWidget {
                     children: [
                       TextField(
                         controller: model.emailController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: 'Email',
                         ),
                         onChanged: (text) {
                           model.setEmail(text);
                         },
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 16,
                       ),
                       TextField(
                         controller: model.passwordController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: 'パスワード',
                         ),
                         onChanged: (text) {
                           model.setPassword(text);
                         },
+                        obscureText: true,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 16,
                       ),
                       ElevatedButton(
@@ -65,7 +66,7 @@ class RegisterPage extends StatelessWidget {
                             model.endLoading();
                           }
                         },
-                        child: Text('登録する'),
+                        child: const Text('登録する'),
                       ),
                     ],
                   ),
@@ -74,7 +75,7 @@ class RegisterPage extends StatelessWidget {
                 if (model.isLoading)
                   Container(
                       color: Colors.black54,
-                      child: Center(
+                      child: const Center(
                         child: CircularProgressIndicator(),
                       ))
               ],

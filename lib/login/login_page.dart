@@ -9,7 +9,7 @@ class LoginPage extends StatelessWidget {
     return ChangeNotifierProvider<LoginModel>(
       create: (_) => LoginModel(),
       child: Scaffold(
-        appBar: AppBar(title: Text('ログイン')),
+        appBar: AppBar(title: const Text('ログイン')),
         body: Center(
           //notifyListenersによって発火する。
           child: Consumer<LoginModel>(builder: (context, model, child) {
@@ -21,26 +21,27 @@ class LoginPage extends StatelessWidget {
                     children: [
                       TextField(
                         controller: model.emailController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: 'Email',
                         ),
                         onChanged: (text) {
                           model.setEmail(text);
                         },
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 16,
                       ),
                       TextField(
                         controller: model.passwordController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: 'パスワード',
                         ),
                         onChanged: (text) {
                           model.setPassword(text);
                         },
+                        obscureText: true,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 16,
                       ),
                       ElevatedButton(
@@ -66,7 +67,7 @@ class LoginPage extends StatelessWidget {
                             model.endLoading();
                           }
                         },
-                        child: Text('ログイン'),
+                        child: const Text('ログイン'),
                       ),
                       TextButton(
                         //titleとauthorがNULLでなければボタン有効
@@ -80,7 +81,7 @@ class LoginPage extends StatelessWidget {
                             ),
                           );
                         },
-                        child: Text('新規登録の方はこちら'),
+                        child: const Text('新規登録の方はこちら'),
                       ),
                     ],
                   ),
@@ -89,7 +90,7 @@ class LoginPage extends StatelessWidget {
                 if (model.isLoading)
                   Container(
                       color: Colors.black54,
-                      child: Center(
+                      child: const Center(
                         child: CircularProgressIndicator(),
                       ))
               ],

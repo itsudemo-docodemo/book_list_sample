@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -43,9 +42,6 @@ class LoginModel extends ChangeNotifier {
       //firebase authでユーザーログイン
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email!, password: password!);
-
-      final currentUser = FirebaseAuth.instance.currentUser;
-      final uid = currentUser!.uid;
     }
   }
 }
