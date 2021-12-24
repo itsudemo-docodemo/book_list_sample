@@ -1,5 +1,6 @@
 import 'package:book_list_sample/login/login_model.dart';
 import 'package:book_list_sample/register/register_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -83,6 +84,10 @@ class LoginPage extends StatelessWidget {
                         },
                         child: const Text('新規登録の方はこちら'),
                       ),
+                      ElevatedButton(
+                        onPressed: () => _onSignInWithAnonymousUser(context),
+                        child: Text('登録せず利用'),
+                      ),
                     ],
                   ),
                 ),
@@ -99,5 +104,24 @@ class LoginPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  //登録せず利用
+  Future<void> _onSignInWithAnonymousUser(BuildContext context) async {
+    final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+    try {
+      await firebaseAuth.signInAnonymously();
+      //画面を閉じる
+      Navigator.of(context).pop();
+    } catch (e) {
+      await showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('エラー'),
+              content: Text(e.toString()),
+            );
+          });
+    }
   }
 }

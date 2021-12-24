@@ -19,8 +19,10 @@ class MyPage extends StatelessWidget {
                     await Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            EditProfilePage(model.name!, model.description!),
+                        builder: (context) => EditProfilePage(
+                          model.name ?? '',
+                          model.description ?? '',
+                        ),
                       ),
                     );
                     model.fetchUser();

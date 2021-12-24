@@ -3,6 +3,7 @@ import 'package:book_list_sample/book_list/book_list_model.dart';
 import 'package:book_list_sample/domain/book.dart';
 import 'package:book_list_sample/edit_book/edit_book_page.dart';
 import 'package:book_list_sample/login/login_page.dart';
+import 'package:book_list_sample/login2/login2_page.dart';
 import 'package:book_list_sample/mypage/my_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -45,6 +46,18 @@ class BookListPage extends StatelessWidget {
                   }
                 },
                 icon: const Icon(Icons.person)),
+            IconButton(
+                onPressed: () async {
+                  //画面遷移
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Login2Page(),
+                      fullscreenDialog: true, //pageが下から出現
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.person_add)),
           ],
         ),
         body: Center(
