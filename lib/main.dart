@@ -1,6 +1,7 @@
+import 'package:book_list_sample/1_top/top_page.dart';
+import 'package:book_list_sample/book_list/book_list_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'book_list/book_list_page.dart';
 
 void main() async {
   //cloud_firestore初期化
@@ -19,7 +20,16 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'BookListSample',
-      home: BookListPage(),
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+//      home: TopPage(),
+//      home: BookListPage(),
+      home: GestureDetector(
+        //その他領域タップでキーボード隠す
+        onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+        child: TopPage(),
+      ),
     );
   }
 }
