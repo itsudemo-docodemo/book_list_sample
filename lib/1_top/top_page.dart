@@ -1,4 +1,5 @@
 import 'package:book_list_sample/1_top/top_model.dart';
+import 'package:book_list_sample/2_chart/chart_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -9,47 +10,92 @@ class TopPage extends StatelessWidget {
     return ChangeNotifierProvider<TopModel>(
       //画面を開いたときに最初にログイン状態を確認する。
       create: (_) => TopModel(),
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('人生逃げ切り計算機'),
-        ),
-        body: Center(
-          //notifyListenersによって発火する。
-          child: Consumer<TopModel>(builder: (context, model, child) {
-            return model.isSignIn() != false
-                ? LogoutPage(model)
-                : LoginPage(context, model);
-          }),
-        ),
-      ),
+      //notifyListenersによって発火する。
+      child: Consumer<TopModel>(builder: (context, model, child) {
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('人生逃げ切り計算機'),
+          ),
+          body: model.isSignIn() != false
+              ? LogoutPage(model)
+              : LoginPage(context, model),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+          floatingActionButton: Visibility(
+            visible: model.isSignIn(),
+            child: FloatingActionButton(
+              onPressed: () async {
+                await model.register();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Chart(model.value_items)),
+                );
+              },
+              child: Text('計算'),
+            ),
+          ),
+          bottomNavigationBar: BottomAppBar(
+            color: Theme.of(context).primaryColor,
+            notchMargin: 6.0,
+            shape: AutomaticNotchedShape(
+              RoundedRectangleBorder(),
+              StadiumBorder(
+                side: BorderSide(),
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: new Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Visibility(
+                    visible: model.isSignIn(),
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.logout,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        model.signOutWithAnonymousUser();
+                      },
+/*
+                      onPressed: !model.isSignIn()
+                          ? null
+                          : () {
+                              model.signOutWithAnonymousUser();
+                            },
+*/
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      Icons.info_outline,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {},
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }),
     );
   }
 
   Container LogoutPage(TopModel model) {
-    final leading_items = [
-      '現在の年齢',
-      '現在の貯金額',
-      '投資利回り(税引前)',
-      '年間支出額',
-      '年金受給が開始される年齢',
-      '受給年金(月額)',
-      '年間インフレ率',
-      '現在のその他所得'
-    ];
-    final trailing_items = ['歳', '万円', '%', '万円', '歳', '万円', '%', '万円'];
-    final init_value_items = [60.0, 3000.0, 3.0, 200.0, 65.0, 10.0, 2.0, 0.0];
-    var value_items = [60.0, 3000.0, 3.0, 200.0, 65.0, 10.0, 2.0, 0.0];
-
     return Container(
       padding: EdgeInsets.all(5),
       width: double.infinity,
       child: ListView.builder(
-        itemCount: leading_items.length,
+        itemCount: model.leading_items.length,
         itemBuilder: (context, index) {
           return ListTile(
             leading: Container(
               width: 180,
-              child: Text('${leading_items[index]}'),
+              child: Text('${model.leading_items[index]}'),
             ),
             title: Container(
               width: 50,
@@ -58,7 +104,7 @@ class TopPage extends StatelessWidget {
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    hintText: '${init_value_items[index].toInt()}',
+                    hintText: '${model.init_value_items[index].toInt()}',
                   ),
                   textAlign: TextAlign.right, //右寄せ
                   textAlignVertical: TextAlignVertical.bottom,
@@ -68,16 +114,16 @@ class TopPage extends StatelessWidget {
                         */
                   onChanged: (String value) {
                     if (value.isEmpty == true) {
-                      value_items[index] = init_value_items[index];
+                      model.value_items[index] = model.init_value_items[index];
                     } else {
-                      value_items[index] = double.parse(value);
+                      model.value_items[index] = double.parse(value);
                     }
                   }),
             ),
             subtitle: Container(
               width: 30,
-              child:
-                  Text('${trailing_items[index]}', textAlign: TextAlign.right),
+              child: Text('${model.trailing_items[index]}',
+                  textAlign: TextAlign.right),
             ),
             trailing: IconButton(
               icon: Icon(Icons.help_outline),
@@ -87,8 +133,8 @@ class TopPage extends StatelessWidget {
                   barrierDismissible: false,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: Text('${leading_items[index]}'),
-                      content: Text('${leading_items[index]}'),
+                      title: Text('${model.leading_items[index]}'),
+                      content: Text('${model.leading_items[index]}'),
                       actions: <Widget>[
                         OutlinedButton(
                           child: Text('OK'),
@@ -129,6 +175,7 @@ class TopPage extends StatelessWidget {
               ElevatedButton(
                 onPressed: () async {
                   await model.signInWithAnonymousUser(context);
+                  await model.register();
                 },
                 child: Text('匿名認証'),
               ),

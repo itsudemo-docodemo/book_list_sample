@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,20 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class TopModel extends ChangeNotifier {
+  final leading_items = [
+    '現在の年齢',
+    '現在の貯金額',
+    '投資利回り(税引前)',
+    '年間支出額',
+    '年金受給が開始される年齢',
+    '受給年金(月額)',
+    '年間インフレ率',
+    '現在のその他所得'
+  ];
+  final trailing_items = ['歳', '万円', '%', '万円', '歳', '万円', '%', '万円'];
+  final init_value_items = [60.0, 3000.0, 3.0, 200.0, 65.0, 10.0, 2.0, 0.0];
+  var value_items = [60.0, 3000.0, 3.0, 200.0, 65.0, 10.0, 2.0, 0.0];
+
   //Loading表示
   bool isLoading = false;
 
@@ -180,6 +195,41 @@ class TopModel extends ChangeNotifier {
 
       return firebaseUser;
 */
+    } catch (exception) {
+      print(exception);
+    } finally {
+      //SignIn処理終了
+      endLoading();
+    }
+  }
+
+  //firestoreに登録
+  Future register() async {
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    final doc = FirebaseFirestore.instance.collection('users').doc(uid);
+
+    //SignIn処理開始
+    startLoading();
+
+    try {
+      await doc.set({
+        //'現在の年齢',
+        'age': value_items[0],
+        //'現在の貯金額',
+        'saving': value_items[1],
+        //'投資利回り(税引前)',
+        'yield': value_items[2],
+        //'年間支出額',
+        'spending': value_items[3],
+        //'年金受給が開始される年齢',
+        'pension_age': value_items[4],
+        //'受給年金(月額)',
+        'pension_amount': value_items[5],
+        //'年間インフレ率',
+        'inflation': value_items[6],
+        //'現在のその他所得'
+        'income': value_items[7],
+      });
     } catch (exception) {
       print(exception);
     } finally {
