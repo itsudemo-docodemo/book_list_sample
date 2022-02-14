@@ -16,12 +16,14 @@ class TopPage extends StatelessWidget {
           appBar: AppBar(
             title: const Text('人生逃げ切り計算機'),
           ),
+          //Login未ならLogin画面を、Login済なら計算機画面を表示
           body: model.isSignIn() != false
               ? LogoutPage(model)
               : LoginPage(context, model),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerDocked,
           floatingActionButton: Visibility(
+            //Login未の場合、ボタンを非表示
             visible: model.isSignIn(),
             child: FloatingActionButton(
               onPressed: () async {
@@ -51,6 +53,7 @@ class TopPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Visibility(
+                    //Login未の場合、ボタンを非表示
                     visible: model.isSignIn(),
                     child: IconButton(
                       icon: Icon(
@@ -74,6 +77,7 @@ class TopPage extends StatelessWidget {
                       Icons.info_outline,
                       color: Colors.white,
                     ),
+                    //情報ボタンの処理の実装はこれから
                     onPressed: () {},
                   ),
                 ],
@@ -85,6 +89,7 @@ class TopPage extends StatelessWidget {
     );
   }
 
+  //人生逃げ切り計算機表示画面
   Container LogoutPage(TopModel model) {
     return Container(
       padding: EdgeInsets.all(5),
@@ -93,10 +98,12 @@ class TopPage extends StatelessWidget {
         itemCount: model.leading_items.length,
         itemBuilder: (context, index) {
           return ListTile(
+            //表の項目名
             leading: Container(
               width: 180,
               child: Text('${model.leading_items[index]}'),
             ),
+            //表の項目の値
             title: Container(
               width: 50,
               height: 40,
@@ -120,11 +127,13 @@ class TopPage extends StatelessWidget {
                     }
                   }),
             ),
+            //表の項目の単位
             subtitle: Container(
               width: 30,
               child: Text('${model.trailing_items[index]}',
                   textAlign: TextAlign.right),
             ),
+            //表の項目の内容説明
             trailing: IconButton(
               icon: Icon(Icons.help_outline),
               onPressed: () async {
@@ -133,6 +142,7 @@ class TopPage extends StatelessWidget {
                   barrierDismissible: false,
                   builder: (BuildContext context) {
                     return AlertDialog(
+                      //仮実装
                       title: Text('${model.leading_items[index]}'),
                       content: Text('${model.leading_items[index]}'),
                       actions: <Widget>[
@@ -165,6 +175,7 @@ class TopPage extends StatelessWidget {
 */
   }
 
+  //Login画面
   Stack LoginPage(BuildContext context, TopModel model) {
     return Stack(
       children: [
@@ -172,6 +183,7 @@ class TopPage extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
+              //匿名認証
               ElevatedButton(
                 onPressed: () async {
                   await model.signInWithAnonymousUser(context);
@@ -179,12 +191,14 @@ class TopPage extends StatelessWidget {
                 },
                 child: Text('匿名認証'),
               ),
+              //Google認証
               ElevatedButton(
                 onPressed: () async {
                   await model.signInWithGoogle(context);
                 },
                 child: Text('Google認証'),
               ),
+              //Apple認証
               SignInWithAppleButton(
                 style: SignInWithAppleButtonStyle.black,
                 iconAlignment: IconAlignment.center,
